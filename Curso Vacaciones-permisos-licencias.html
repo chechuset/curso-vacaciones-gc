@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso Interactivo: Vacaciones y Permisos en la Guardia Civil</title>
+    <style>
+        :root {
+            --primary-color: #006400;
+            --primary-color-light: #007a00;
+            --background-color-light: #f4f7f6;
+            --text-color-light: #333;
+            --card-bg-light: #ffffff;
+            --background-color-dark: #121212;
+            --text-color-dark: #e0e0e0;
+            --card-bg-dark: #1e1e1e;
+            --success-color: #4CAF50;
+            --error-color: #f44336;
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --border-radius: 8px;
+            --shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        body {
+            font-family: var(--font-family);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color-light);
+            color: var(--text-color-light);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            --background-color-light: var(--background-color-dark);
+            --text-color-light: var(--text-color-dark);
+            --card-bg-light: var(--card-bg-dark);
+        }
+
+        .fixed-header-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: var(--card-bg-light);
+            box-shadow: var(--shadow);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: auto;
+            padding-top: 180px; /* Adjusted for fixed header height */
+        }
+
+        header {
+            background: var(--primary-color);
+            color: #fff;
+            padding: 1rem 0;
+            text-align: center;
+            position: relative;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .theme-switcher {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 20px;
+            background: #fff;
+            color: var(--primary-color);
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .progress-container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 15px auto;
+            background-color: #e0e0e0;
+            border-radius: var(--border-radius);
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 25px;
+            background-color: var(--success-color);
+            text-align: center;
+            line-height: 25px;
+            color: white;
+            border-radius: var(--border-radius);
+            transition: width 0.5s ease-in-out;
+        }
+
+        .module {
+            background: var(--card-bg-light);
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: background-color 0.3s, opacity 0.3s;
+        }
+
+        .module.locked {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .module h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .summary {
+            background-color: rgba(0, 100, 0, 0.05);
+            border-left: 5px solid var(--primary-color);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: var(--border-radius);
+        }
+
+        .quiz-question p {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .quiz-options label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            transition: background-color 0.2s;
+        }
+
+        .quiz-options label:hover {
+            background-color: rgba(0, 100, 0, 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary-color);
+            color: #fff;
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--primary-color-light);
+        }
+
+        .result {
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: var(--border-radius);
+            font-weight: bold;
+        }
+
+        .correct {
+            background-color: rgba(76, 175, 80, 0.1);
+            border-left: 5px solid var(--success-color);
+        }
+
+        .incorrect {
+            background-color: rgba(244, 67, 54, 0.1);
+            border-left: 5px solid var(--error-color);
+        }
+        
+        .correct-answer-text {
+            color: var(--success-color);
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fixed-header-container">
+        <header>
+            <h1>Curso Vacaciones, permisos y licencias</h1>
+            <button class="theme-switcher" id="themeSwitcher" title="Cambiar tema">🌙</button>
+        </header>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar">0%</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="modules-container"></div>
+    </div>
+
+    <footer>
+        <p>Generado por Gemini Code Assist</p>
+    </footer>
+
+    <script>
+        const modules = [
+            {
+                title: "Módulo 0: Marco Normativo",
+                summary: "<b>Resumen de la Normativa:</b> Este módulo inicial establece el marco legal que regula los derechos y deberes de los Guardias Civiles. La norma principal es el <b>Estatuto Básico del Empleado Público (EBEP)</b>, que aplica a todos los funcionarios. De forma más específica, la <b>Ley Orgánica 11/2007</b> regula los derechos y deberes de los miembros de la Guardia Civil, y la <b>Ley 29/2014</b> de Régimen del Personal establece las particularidades de su carrera. La Orden General que estudiaremos en detalle es el desarrollo práctico de estas leyes para el día a día.",
+                quiz: [
+                    { question: "¿Cuál es la norma principal que regula los derechos de todos los empleados públicos en España?", options: ["La Orden General de Vacaciones", "El Estatuto Básico del Empleado Público (EBEP)", "La Ley de Régimen del Personal de la Guardia Civil", "El Código Penal Militar"], answer: 1 },
+                    { question: "La Ley Orgánica 11/2007, ¿qué aspecto regula principalmente?", options: ["El régimen de ascensos", "Los derechos y deberes fundamentales de los Guardias Civiles", "Las retribuciones", "La estructura de las unidades"], answer: 1 },
+                    { question: "¿Qué norma desarrolla de forma específica el régimen de vacaciones y permisos?", options: ["El EBEP", "La Ley de Régimen del Personal", "Una Orden General específica", "La Constitución Española"], answer: 2 },
+                    { question: "El derecho a la conciliación de la vida personal, familiar y laboral está reconocido en...", options: ["Solo en la Orden General", "Solo en el EBEP", "Tanto en el EBEP como en la normativa específica de la Guardia Civil", "Únicamente en leyes europeas"], answer: 2 },
+                    { question: "Según el EBEP, los permisos por motivos de conciliación son un derecho de...", options: ["Solo los funcionarios de carrera", "Solo el personal laboral", "Todos los empleados públicos", "Solo los Guardias Civiles"], answer: 2 },
+                    { question: "La Ley 29/2014 de Régimen del Personal, ¿afecta a las vacaciones?", options: ["No, solo trata de ascensos", "Sí, establece el marco general de la carrera profesional, que incluye estos derechos", "Solo para los oficiales", "Únicamente regula las situaciones de excedencia"], answer: 1 },
+                    { question: "¿Por qué es importante el EBEP para un Guardia Civil?", options: ["No es importante, no aplica", "Porque establece las bases comunes a todos los funcionarios, incluyendo permisos y vacaciones", "Porque regula el uso del uniforme", "Porque define las misiones internacionales"], answer: 1 },
+                    { question: "La relación entre la Ley 29/2014 y la Orden General de vacaciones es de...", options: ["No tienen relación", "La Orden General desarrolla lo previsto en la Ley", "La Ley anula la Orden General", "Son normativas contradictorias"], answer: 1 },
+                    { question: "El derecho a la jornada de trabajo, permisos y vacaciones se recoge de forma general en el...", options: ["Capítulo V del EBEP", "Anexo I de la Orden General", "Título X de la Ley de Régimen de Personal", "No se recoge de forma general"], answer: 0 },
+                    { question: "¿La normativa de la Guardia Civil puede contradecir al EBEP en materia de permisos?", options: ["Sí, siempre", "No, debe adaptarse a las bases del EBEP, aunque con las particularidades necesarias", "Solo si lo autoriza un General", "Sí, porque es un cuerpo militar"], answer: 1 }
+                ]
+            },
+            {
+                title: "Módulo 1: Disposiciones Generales y Definiciones",
+                summary: "<b>Resumen de la Normativa:</b> Este módulo introduce el objeto (Art. 1), ámbito de aplicación (Art. 2) y las definiciones clave (Art. 3) de la Orden General. Es la base para entender conceptos como 'vacaciones', 'permiso' y 'licencia' que se usarán en toda la regulación.",
+                quiz: [
+                    { question: "¿Cuál es el objeto principal de esta Orden General?", options: ["Regular las sanciones disciplinarias.", "Determinar el régimen de vacaciones, permisos y licencias.", "Establecer el plan de estudios de la academia.", "Definir los uniformes reglamentarios."], answer: 1 },
+                    { question: "Según el Artículo 3, ¿qué se entiende por 'licencia'?", options: ["Un permiso retribuido para asuntos personales.", "Un período de descanso anual obligatorio.", "Un período para ausentarse del destino para atender asuntos personales o mejorar la preparación profesional.", "La autorización para cambiar de destino."], answer: 2 },
+                    { question: "¿A quién es de aplicación esta orden general?", options: ["Solo a los oficiales de la Guardia Civil.", "A todo el personal de las Fuerzas Armadas.", "A los guardias civiles en situaciones específicas y a los alumnos de centros docentes.", "Únicamente al personal administrativo."], answer: 2 },
+                    { question: "¿Qué es el 'período anual' a efectos de esta orden?", options: ["Del 1 de enero al 31 de diciembre.", "Del 1 de septiembre al 31 de agosto.", "Del primer día del periodo mensual de febrero de un año al último día del periodo mensual de enero del año siguiente.", "Coincide con el año fiscal."], answer: 2 },
+                    { question: "¿El 'tiempo de servicio efectivo' incluye las ausencias por enfermedad?", options: ["No, nunca se computan.", "Sí, a estos solos efectos, se computarán como tiempo de servicio efectivo.", "Solo si la enfermedad es grave.", "Depende de la duración de la ausencia."], answer: 1 },
+                    { question: "¿Un guardia civil en comisión de servicio en el extranjero con régimen propio se rige por esta orden?", options: ["Sí, siempre.", "No, se regirá por su régimen específico sin perjuicio de algunas excepciones.", "Solo para las licencias.", "Solo para los permisos."], answer: 1 },
+                    { question: "¿Qué se entiende por 'período vacacional'?", options: ["Solo los días hábiles de vacaciones.", "Los días de crédito y los fines de semana y festivos incluidos de forma continuada.", "30 días naturales siempre.", "Los días que elija el Guardia Civil sin ninguna otra consideración."], answer: 1 },
+                    { question: "¿La orden general tiene carácter supletorio para algún colectivo?", options: ["No, es de aplicación directa para todos.", "Sí, para los guardias civiles no incluidos en el ámbito de aplicación general.", "Sí, para el personal de las Fuerzas Armadas.", "No, no tiene carácter supletorio."], answer: 1 },
+                    { question: "¿Se aplica esta orden a los alumnos de los centros docentes de formación?", options: ["No, tienen su propia ley.", "Sí, a efectos de vacaciones, permisos y licencias, según el régimen de alumnado.", "Solo durante el período de prácticas.", "No, en ningún caso."], answer: 1 },
+                    { question: "¿Qué es un 'permiso' según el artículo 3?", options: ["Un derecho a faltar sin justificación.", "Un período de tiempo de ausencia o exención del servicio autorizado.", "Un sinónimo de vacaciones.", "Una licencia no retribuida."], answer: 1 }
+                ]
+            },
+            {
+                title: "Módulo 2: Vacaciones",
+                summary: "<b>Resumen de la Normativa:</b> Este módulo detalla el derecho a vacaciones. Cubre el crédito de días anuales (Art. 4), cómo se configuran y computan los periodos (Art. 5), la solicitud (Art. 6) y las prioridades en la concesión (Art. 11), incluyendo los turnos de verano (Art. 9). El EBEP en su Art. 50 establece el derecho a 22 días hábiles anuales como mínimo.",
+                quiz: [
+                    { question: "¿Cuántos días hábiles de vacaciones corresponden por cada período anual completo?", options: ["20", "22", "25", "30"], answer: 1 },
+                    { question: "¿Con cuántos años de servicio se obtiene el primer día adicional de vacaciones?", options: ["10 años", "15 años", "20 años", "25 años"], answer: 1 },
+                    { question: "¿Cuál es el período mínimo de disfrute de vacaciones, como regla general?", options: ["Un día", "Dos días hábiles", "Cinco días hábiles consecutivos", "Siete días naturales"], answer: 2 },
+                    { question: "¿Se puede disfrutar un día de vacaciones de forma independiente?", options: ["No, nunca.", "Sí, si obedece a la recuperación de días no disfrutados o por circunstancias especiales.", "Solo si lo autoriza el Director General.", "Únicamente en Navidad."], answer: 1 },
+                    { question: "Si un período vacacional finaliza en viernes, ¿qué días se consideran inhábiles a efectos de cómputo?", options: ["Ninguno, solo el viernes.", "El sábado y domingo inmediatamente posteriores.", "Solo el sábado.", "El viernes y el sábado."], answer: 1 },
+                    { question: "¿Qué ocurre si durante las vacaciones se sufre una incapacidad temporal?", options: ["Se pierden los días de vacaciones.", "El período vacacional se interrumpe y el resto se disfruta después.", "Se prorrogan las vacaciones automáticamente.", "No ocurre nada, la incapacidad no afecta."], answer: 1 },
+                    { question: "¿Cuál es la fecha límite para disfrutar los días de vacaciones acumulados del año anterior por necesidades del servicio?", options: ["El 31 de enero.", "El 14 de junio del año siguiente.", "No hay fecha límite.", "El 31 de marzo."], answer: 1 },
+                    { question: "En el orden de prioridad para elegir turno de verano, ¿quién tiene preferencia?", options: ["El de mayor antigüedad.", "El que tenga más días de crédito.", "El personal que no haya disfrutado vacaciones en el verano anterior.", "Se decide por sorteo."], answer: 2 },
+                    { question: "¿El inicio o fin de una solicitud de vacaciones puede ser en sábado o domingo?", options: ["Sí, sin problema.", "Solo si es un turno de verano.", "No, como regla general, salvo excepciones de turnos.", "Solo con permiso especial."], answer: 2 },
+                    { question: "Según el EBEP, ¿las vacaciones anuales pueden ser compensadas económicamente?", options: ["Sí, siempre.", "Solo en caso de jubilación.", "No, como regla general, salvo en caso de conclusión de la relación de servicios por causas ajenas al interesado.", "Sí, si el interesado lo prefiere."], answer: 2 }
+                ]
+            },
+            {
+                title: "Módulo 3: Permisos",
+                summary: "<b>Resumen de la Normativa:</b> Este módulo es extenso y cubre todos los tipos de permisos: por asuntos particulares (Art. 12), por causas justificadas como fallecimiento o matrimonio (Art. 17, 28), y por motivos de conciliación (parto Art. 29, paternidad Art. 31, lactancia Art. 23). Estos permisos son el desarrollo de los derechos básicos del EBEP (Art. 48 y 49).",
+                quiz: [
+                    { question: "¿Cuántos días de permiso por asuntos particulares se conceden por período anual?", options: ["3 días", "Hasta 6 días", "10 días", "No existen"], answer: 1 },
+                    { question: "¿Cuántos días corresponden por matrimonio?", options: ["10 días hábiles", "15 días hábiles", "15 días naturales", "20 días naturales"], answer: 2 },
+                    { question: "El permiso por parto tiene una duración de...", options: ["10 semanas", "12 semanas", "16 semanas ininterrumpidas", "20 semanas"], answer: 2 },
+                    { question: "¿El permiso por lactancia puede ser ejercido por ambos progenitores a la vez?", options: ["No, es exclusivo de la madre.", "Sí, puede disfrutarse de forma simultánea o compartida si ambos trabajan.", "Solo si son familia numerosa.", "Solo el padre puede cogerlo."], answer: 1 },
+                    { question: "Por traslado de domicilio sin cambio de residencia, ¿cuántos días de permiso se conceden?", options: ["Ninguno", "Un día", "Dos días", "Tres días"], answer: 1 },
+                    { question: "¿Se puede acumular el permiso de asuntos particulares a las vacaciones?", options: ["Sí, siempre.", "No, nunca.", "Solo a los periodos no sujetos al mínimo de cinco días hábiles.", "Solo si sobran del año anterior."], answer: 2 },
+                    { question: "El permiso por paternidad, ¿cuántos días dura según la norma de 2016?", options: ["15 días", "20 días", "28 días naturales", "4 semanas"], answer: 2 },
+                    { question: "Para concurrir a un examen final oficial, ¿el permiso cubre los desplazamientos?", options: ["No, solo el día del examen.", "Sí, el tiempo necesario para ida y regreso.", "Solo si es fuera de la península.", "Depende de la nota del examen."], answer: 1 },
+                    { question: "¿Cuántos días corresponden por enfermedad grave de un familiar de segundo grado en distinta localidad?", options: ["Dos días hábiles", "Tres días hábiles", "Cuatro días hábiles", "Cinco días hábiles"], answer: 2 },
+                    { question: "El EBEP reconoce un permiso por violencia de género sobre la mujer funcionaria para...", options: ["Pedir un mes de vacaciones.", "Reducir la jornada con reducción de sueldo.", "Hacer efectiva su protección o su derecho a la asistencia social integral.", "Cambiar de destino sin condiciones."], answer: 2 }
+                ]
+            },
+            {
+                title: "Módulo 4: Licencias",
+                summary: "<b>Resumen de la Normativa:</b> Este módulo explica las licencias por asuntos propios (Art. 36) y por estudios (Art. 37). Se detallan su duración, condiciones, si son retribuidas o no, y el procedimiento para solicitarlas. La Ley 11/2007 (Art. 29) reconoce el derecho general a disfrutar de las licencias previstas en la legislación de funcionarios.",
+                quiz: [
+                    { question: "¿Cuál es la duración máxima de la licencia por asuntos propios en un período de dos años?", options: ["30 días", "60 días", "90 días naturales", "120 días"], answer: 2 },
+                    { question: "La licencia por asuntos propios, ¿es retribuida?", options: ["Sí, siempre.", "No, se concede sin retribución alguna.", "Solo se perciben las retribuciones básicas.", "Depende de la duración."], answer: 1 },
+                    { question: "La licencia por estudios se concede para...", options: ["Cualquier tipo de estudio.", "Solo estudios universitarios.", "Realizar aquellos relacionados con las funciones y actividades del puesto.", "Estudios de idiomas únicamente."], answer: 2 },
+                    { question: "¿Cuál es la duración mínima de una licencia por asuntos propios?", options: ["Un día", "Tres días", "Siete días naturales consecutivos", "Quince días"], answer: 2 },
+                    { question: "La licencia por estudios de hasta siete días naturales, ¿qué retribución conlleva?", options: ["Ninguna", "Solo las retribuciones básicas.", "La retribución completa.", "La mitad de la retribución."], answer: 1 },
+                    { question: "¿Se puede disfrutar más de una licencia por estudios en el mismo año natural?", options: ["Sí, hasta dos.", "No, solo se podrá disfrutar una, en una u otra modalidad.", "Sí, sin límite.", "Solo si son estudios diferentes."], answer: 1 },
+                    { question: "¿La concesión de la licencia por asuntos propios es automática?", options: ["Sí, siempre se concede.", "No, está supeditada a las necesidades del servicio.", "Solo si es por menos de 10 días.", "Depende del empleo del solicitante."], answer: 1 },
+                    { question: "La licencia por estudios de más de siete días, ¿es retribuida?", options: ["Sí, al 100%.", "Sí, al 50%.", "No, es sin retribución alguna.", "Solo las retribuciones básicas."], answer: 2 },
+                    { question: "¿Desde cuándo se cuenta el período de dos años para la licencia por asuntos propios?", options: ["Desde el 1 de enero del primer año.", "Desde la fecha de inicio de la primera licencia disfrutada.", "Desde que se ingresa en el Cuerpo.", "Es por año natural."], answer: 1 },
+                    { question: "¿La Ley de Derechos y Deberes (11/2007) menciona explícitamente las licencias?", options: ["No, solo los permisos.", "Sí, en su artículo 29, remitiendo a la legislación general de funcionarios.", "Solo la licencia por estudios.", "Solo la licencia por asuntos propios."], answer: 1 }
+                ]
+            },
+            {
+                title: "Módulo 5: Autoridades y Competencias",
+                summary: "<b>Resumen de la Normativa:</b> Aquí se define qué autoridades son competentes para conceder las vacaciones y permisos (Art. 38) y las licencias (Art. 39). Se establece una jerarquía clara para la gestión y autorización de las solicitudes y se mencionan los recursos aplicables (Art. 40). La Ley 29/2014 detalla las competencias del Director General y de los Ministros.",
+                quiz: [
+                    { question: "¿Quién tiene la competencia para la concesión de las licencias?", options: ["El Jefe de Comandancia.", "El Director Adjunto Operativo.", "El Subdirector General de Personal.", "Cualquier oficial."], answer: 2 },
+                    { question: "Un Jefe de Unidad, ¿puede conceder un permiso por traslado de domicilio?", options: ["No, nunca.", "Sí, está entre los permisos que puede conceder.", "Solo si lo delega el Jefe de Zona.", "Necesita autorización expresa."], answer: 1 },
+                    { question: "¿Qué se puede hacer contra las resoluciones sobre vacaciones y permisos?", options: ["Nada, son definitivas.", "Presentar una queja informal.", "Interponer los recursos pertinentes según la legislación.", "Solicitar un arbitraje."], answer: 2 },
+                    { question: "Según la Ley 29/2014, ¿quién aprueba las convocatorias de procesos selectivos?", options: ["El Jefe de la Unidad.", "El Director General de la Guardia Civil.", "El Ministro de Defensa.", "El Consejo de Ministros."], answer: 1 },
+                    { question: "La concesión del crédito derivado de una interrupción de vacaciones es competencia de...", options: ["El jefe de la unidad del afectado.", "Los mandos de nivel Comandancia o superior.", "Siempre el Director General.", "El servicio de psicología."], answer: 1 },
+                    { question: "¿Un jefe de unidad puede conceder un permiso por matrimonio?", options: ["Sí, siempre.", "No, ese permiso no está en la lista del artículo 38.1.e).", "Solo si la boda es en la misma localidad.", "Sí, pero necesita visado."], answer: 1 },
+                    { question: "¿A quién corresponde dictar las normas de tramitación y control de las licencias?", options: ["Al Director General.", "Al Subdirector General de Personal.", "Al Jefe del Mando de Operaciones.", "A cada Jefe de Comandancia."], answer: 1 },
+                    { question: "El permiso por asuntos particulares de un Guardia Civil, ¿quién lo autoriza?", options: ["El Ministro del Interior.", "El Jefe de su unidad.", "El Rey.", "El Presidente del Gobierno."], answer: 1 },
+                    { question: "Según la Ley 29/2014, la política de personal relativa a destinos es competencia del...", options: ["Ministro de Defensa.", "Ministro del Interior.", "Director General de la Guardia Civil.", "Secretario de Estado de Seguridad."], answer: 1 },
+                    { question: "¿Un Jefe de Zona puede conceder permisos a personal de unidades que no le dependen directamente?", options: ["Sí, a todo el personal de su Zona.", "No, solo al personal destinado en la Unidad y a los jefes de las unidades directamente dependientes.", "Sí, sin restricciones.", "Solo en casos de urgencia."], answer: 1 }
+                ]
+            },
+            {
+                title: "Módulo 6: Disposiciones Adicionales y Especiales",
+                summary: "<b>Resumen de la Normativa:</b> Este módulo aborda los regímenes específicos para personal en misiones militares, destinados en el País Vasco, Navarra y Canarias, y en centros docentes. Adapta la norma general a sus circunstancias particulares, como los días adicionales de vacaciones o permisos.",
+                quiz: [
+                    { question: "El personal en misiones militares, ¿se rige por esta Orden General?", options: ["Sí, exclusivamente.", "No, se rige por la normativa aplicable al resto del contingente.", "Depende del país.", "Solo para permisos."], answer: 1 },
+                    { question: "El personal en País Vasco y Navarra tiene un crédito adicional de vacaciones de...", options: ["5 días", "7 días", "11 días hábiles", "No tienen crédito adicional"], answer: 2 },
+                    { question: "En Canarias, ¿se pueden acumular los días de asuntos particulares a las vacaciones?", options: ["No, está prohibido.", "Sí, cuando se solicite el crédito total de vacaciones.", "Solo la mitad de los días.", "Si sobran del año anterior."], answer: 1 },
+                    { question: "El personal en centros docentes, ¿cómo disfruta sus vacaciones?", options: ["Igual que el resto.", "Están condicionados al calendario académico, en períodos no lectivos.", "No tienen vacaciones.", "Tienen el doble de días."], answer: 1 },
+                    { question: "El personal en País Vasco y Navarra tiene días adicionales de permiso por asuntos particulares. ¿Cuántos?", options: ["Uno", "Dos", "Tres", "Cinco"], answer: 2 },
+                    { question: "Para el personal a turnos, ¿el disfrute de vacaciones puede alterar su jornada de trabajo?", options: ["Sí, la reduce considerablemente.", "No, se busca asegurar el efecto neutro sobre la jornada.", "Sí, la aumenta para compensar.", "No se regula."], answer: 1 },
+                    { question: "¿Quién establece los turnos de permisos en Navidad y Semana Santa para el personal en Canarias?", options: ["El Director General.", "El Jefe de la Zona de Canarias.", "El Jefe de la Comandancia de Las Palmas.", "Se sortea."], answer: 1 },
+                    { question: "¿Los días de vacaciones y 'moscosos' de 2015 no disfrutados antes de febrero de 2016 se pierden?", options: ["Sí, se pierden.", "No, se añaden a los nuevos y se pueden disfrutar hasta el 14 de junio.", "Se compensan económicamente.", "Pasan al año siguiente sin límite."], answer: 1 },
+                    { question: "La Ley 29/2014 establece que la situación de reserva se alcanzará, para cabos y guardias, a los...", options: ["55 años", "58 años", "60 años", "65 años"], answer: 1 },
+                    { question: "La situación de excedencia por cuidado de familiares, según el EBEP, ¿computa a efectos de trienios?", options: ["No, nunca.", "Sí, todo el tiempo.", "Solo los dos primeros años.", "Solo el primer año."], answer: 1 }
+                ]
+            },
+            {
+                title: "Módulo 7: Anexos y Procedimientos",
+                summary: "<b>Resumen de la Normativa:</b> Los anexos detallan los procedimientos prácticos. El Anexo I establece las reglas para el disfrute simultáneo de vacaciones en una unidad. El Anexo II detalla la tramitación y gestión de solicitudes a través del aplicativo informático, un procedimiento clave para la gestión diaria de los permisos.",
+                quiz: [
+                    { question: "¿Cómo se presentan las solicitudes de vacaciones y permisos?", options: ["Verbalmente.", "Mediante el modelo de solicitud en la Intranet corporativa.", "Por correo certificado.", "A través de un representante."], answer: 1 },
+                    { question: "Para el disfrute simultáneo de vacaciones, ¿cuál es la regla general para el personal?", options: ["No hay límite.", "Solo uno.", "El número entero que resulte de dividir entre tres los efectivos.", "La mitad del personal."], answer: 2 },
+                    { question: "Las solicitudes de vacaciones para verano deben grabarse antes de...", options: ["El 1 de enero.", "El último día del período mensual de abril.", "15 días antes.", "No hay fecha límite."], answer: 1 },
+                    { question: "En la fórmula de proporcionalidad, ¿qué significa 'DCA'?", options: ["Días con autorización.", "Descanso compensatorio anual.", "Total de días de crédito anual.", "Días de crédito acumulado."], answer: 2 },
+                    { question: "¿Quién resuelve las solicitudes de vacaciones de verano?", options: ["El Jefe de la Unidad.", "El Jefe de Compañía.", "El competente para decidir (Jefe de Comandancia o similar).", "Recursos Humanos en Madrid."], answer: 2 },
+                    { question: "Si una solicitud de vacaciones ya está autorizada y debe anularse, ¿quién la cancela en el sistema?", options: ["El propio interesado.", "El jefe de la unidad de destino.", "La unidad que concede las vacaciones o el permiso.", "Se anula automáticamente."], answer: 2 },
+                    { question: "En caso de cambio de destino, ¿quién informa a la nueva unidad de los permisos ya disfrutados?", options: ["El propio interesado.", "La nueva unidad lo consulta.", "La unidad que concede las vacaciones.", "No es necesario informar."], answer: 2 },
+                    { question: "¿La solicitud de licencia por estudios debe justificar que se está matriculado?", options: ["No es necesario.", "Solo si lo pide el General.", "Sí, se debe aportar la justificación documental.", "Solo para estudios en el extranjero."], answer: 2 },
+                    { question: "Las solicitudes de permisos por asuntos particulares se graban en...", options: ["Un libro de registro.", "La aplicación informática de gestión.", "Un excel local.", "No se graban, solo se comunican."], answer: 1 },
+                    { question: "¿El Anexo I sirve de referencia para el disfrute simultáneo de permisos por asuntos particulares?", options: ["No, solo para vacaciones.", "Sí, sirve de referencia para ambos.", "Solo para los turnos de verano.", "Solo para oficiales."], answer: 1 }
+                ]
+            }
+        ];
+
+        const modulesContainer = document.getElementById('modules-container');
+        const progressBar = document.getElementById('progressBar');
+        const themeSwitcher = document.getElementById('themeSwitcher');
+        let completedModules = 0;
+        const totalModules = modules.length;
+
+        themeSwitcher.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                themeSwitcher.textContent = '☀️';
+                themeSwitcher.title = 'Cambiar a modo claro';
+            } else {
+                themeSwitcher.textContent = '🌙';
+                themeSwitcher.title = 'Cambiar a modo oscuro';
+            }
+        });
+
+        function renderModules() {
+            modules.forEach((module, index) => {
+                const moduleEl = document.createElement('div');
+                moduleEl.classList.add('module');
+                moduleEl.id = `module-${index}`;
+                if (index > 0) {
+                    moduleEl.classList.add('locked');
+                }
+
+                moduleEl.innerHTML = `
+                    <h2>${module.title}</h2>
+                    <div class="summary">${module.summary}</div>
+                    <div class="quiz" id="quiz-${index}">
+                        <h3>Test de Autoevaluación</h3>
+                    </div>
+                    <button class="btn" onclick="submitQuiz(${index})">Enviar Respuestas</button>
+                    <div class="result" id="result-${index}"></div>
+                `;
+                modulesContainer.appendChild(moduleEl);
+                renderQuiz(module.quiz, index);
+            });
+        }
+
+        function renderQuiz(quizData, moduleIndex) {
+            const quizContainer = document.getElementById(`quiz-${moduleIndex}`);
+            quizData.forEach((q, qIndex) => {
+                const questionEl = document.createElement('div');
+                questionEl.classList.add('quiz-question');
+                questionEl.id = `q-cont-${moduleIndex}-${qIndex}`;
+                let optionsHTML = '';
+                q.options.forEach((option, oIndex) => {
+                    optionsHTML += `
+                        <label>
+                            <input type="radio" name="q-${moduleIndex}-${qIndex}" value="${oIndex}">
+                            ${option}
+                        </label>
+                    `;
+                });
+                questionEl.innerHTML = `
+                    <p>${qIndex + 1}. ${q.question}</p>
+                    <div class="quiz-options">${optionsHTML}</div>
+                `;
+                quizContainer.appendChild(questionEl);
+            });
+        }
+
+        function submitQuiz(moduleIndex) {
+            const module = modules[moduleIndex];
+            const resultContainer = document.getElementById(`result-${moduleIndex}`);
+            const currentModuleEl = document.getElementById(`module-${moduleIndex}`);
+            let score = 0;
+            
+            // Clear previous incorrect markers
+            const prevIncorrect = currentModuleEl.querySelectorAll('.incorrect-question, .correct-answer-text');
+            prevIncorrect.forEach(el => el.remove());
+
+            module.quiz.forEach((q, qIndex) => {
+                const selectedRadio = document.querySelector(`input[name="q-${moduleIndex}-${qIndex}"]:checked`);
+                if (selectedRadio && parseInt(selectedRadio.value) === q.answer) {
+                    score++;
+                }
+            });
+
+            const percentage = (score / module.quiz.length) * 100;
+            resultContainer.innerHTML = `Has acertado ${score} de ${module.quiz.length} preguntas (${percentage.toFixed(2)}%).`;
+
+            if (percentage >= 60) {
+                resultContainer.className = 'result correct';
+                if (!currentModuleEl.classList.contains('completed')) {
+                    completedModules++;
+                    currentModuleEl.classList.add('completed');
+                }
+                if (moduleIndex + 1 < totalModules) {
+                    const nextModuleEl = document.getElementById(`module-${moduleIndex + 1}`);
+                    if (nextModuleEl) {
+                        nextModuleEl.classList.remove('locked');
+                    }
+                }
+
+                // Show correct answers for incorrect questions
+                module.quiz.forEach((q, qIndex) => {
+                    const selectedRadio = document.querySelector(`input[name="q-${moduleIndex}-${qIndex}"]:checked`);
+                    const isCorrect = selectedRadio && parseInt(selectedRadio.value) === q.answer;
+                    if (!isCorrect) {
+                        const questionContainer = document.getElementById(`q-cont-${moduleIndex}-${qIndex}`);
+                        const correctAnswerText = document.createElement('span');
+                        correctAnswerText.className = 'correct-answer-text';
+                        correctAnswerText.textContent = `La respuesta correcta era: ${q.options[q.answer]}`;
+                        questionContainer.appendChild(correctAnswerText);
+                    }
+                });
+
+            } else {
+                resultContainer.className = 'result incorrect';
+                resultContainer.innerHTML += '<br>Debes obtener al menos un 60% para desbloquear el siguiente módulo.';
+            }
+            updateProgressBar();
+        }
+
+        function updateProgressBar() {
+            const progress = (completedModules / totalModules) * 100;
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = progress.toFixed(0) + '%';
+        }
+
+        window.onload = renderModules;
+    </script>
+
+</body>
+</html>
